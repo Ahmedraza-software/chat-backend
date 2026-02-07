@@ -5,13 +5,18 @@ from datetime import datetime
 from typing import Dict, List
 import json
 import hashlib
+import os
 from supabase import create_client, Client
 
 # Supabase setup
-SUPABASE_URL = "https://betfplgezeciguwvglgg.supabase.co"
-SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJldGZwbGdlemVjaWd1d3ZnbGdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0NzIwMDUsImV4cCI6MjA4NjA0ODAwNX0.jzDUdCVmXdGFYiWvzc17MwZMsC6MIY42K9CizB9mjP8"
+SUPABASE_URL = os.getenv("SUPABASE_URL", "https://betfplgezeciguwvglgg.supabase.co")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJldGZwbGdlemVjaWd1d3ZnbGdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0NzIwMDUsImV4cCI6MjA4NjA0ODAwNX0.jzDUdCVmXdGFYiWvzc17MwZMsC6MIY42K9CizB9mjP8")
 
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+try:
+    supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+except Exception as e:
+    print(f"Warning: Supabase initialization error: {e}")
+    supabase = None
 
 def hash_password(password: str) -> str:
     return hashlib.sha256(password.encode()).hexdigest()
